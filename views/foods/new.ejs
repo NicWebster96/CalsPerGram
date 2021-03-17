@@ -1,0 +1,52 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="row">
+  <h1 class="text-center">New Food</h1>
+  <div class="col-6 offset-3">
+    <form action="/foods" method="POST">
+      <div class="mb-3">
+        <label class="form-label" for="name">Name</label>
+        <input class="form-control" type="text" id="name" name="food[name]" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <textarea
+          class="form-control"
+          type="text"
+          id="description"
+          name="food[description]"
+        ></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="calories">Calories</label>
+        <input
+          class="form-control"
+          type="Number"
+          id="calories"
+          name="food[calories]"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="grams">Grams</label>
+        <input
+          class="form-control"
+          type="Number"
+          id="grams"
+          name="food[grams]"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="image">Image URL</label>
+        <input class="form-control" type="text" id="image" name="food[image]" />
+      </div>
+
+      <div class="mb-3">
+        <button class="btn-success">Add Food</button>
+      </div>
+
+      <div>
+        <a href="/foods/">Back</a>
+      </div>
+    </form>
+  </div>
+</div>

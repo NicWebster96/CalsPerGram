@@ -1,0 +1,24 @@
+<% layout('layouts/boilerplate.ejs') %>
+<h1>All food!</h1>
+<div class="mb-5">
+  <a href="/foods/new">Add food</a>
+</div>
+<% for(let food of foods) { %>
+<div class="card mb-3">
+  <div class="row">
+    <div class="col-md-4">
+      <img class="img-fluid" alt="" src="<%= food.image %> " width="400" height="400" />
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><%= food.name %></h5>
+        <p class="card-text"><%= food.description %></p>
+        <p class="card-text">
+          <small class="text-muted"><%= food.calories %> Calories</small>
+        </p>
+        <a class="btn btn-primary" href="/foods/<%= food._id %>">View <%= food.name %> </a>
+      </div>
+    </div>
+  </div>
+</div>
+<% } %>

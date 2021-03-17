@@ -1,0 +1,30 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card">
+      <% if (food.image) { %>
+      <img src="<%= food.image %>" class="card-img-top" alt="" width="400" height="400" />
+      <% } %>
+      <div class="card-body">
+        <h5 class="card-title"><%= food.name %></h5>
+        <p class="card-text"><%= food.description %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><%= food.calories %> Calories</li>
+        <li class="list-group-item"><%= food.grams %> Grams</li>
+      </ul>
+      <div class="card-body">
+        <a class="card-link btn btn-secondary" href="/foods/">Back to all</a>
+        <a class="card-link btn btn-warning" href="/foods/<%= food._id %>/edit">Edit</a>
+        <form
+          class="card-link d-inline"
+          action="/foods/<%= food._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
