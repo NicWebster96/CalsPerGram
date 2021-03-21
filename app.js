@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/expressError');
 const Food = require('./models/food');
+const Joi = require('joi');
+const { foodSchema } = require('./schemas');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 
@@ -29,6 +31,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+const validateFood = (req, res, next) => {
+  const { error } = foodSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(',');
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
 app.get('/', (req, res) => {
   res.send('Hello from CPG!');
 });
@@ -47,6 +59,7 @@ app.get('/foods/new', (req, res) => {
 
 app.post(
   '/foods',
+  validateFood,
   catchAsync(async (req, res, next) => {
     const food = new Food(req.body.food);
     await food.save();
@@ -74,6 +87,7 @@ app.get(
 
 app.put(
   '/foods/:id',
+  validateFood,
   catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const food = await Food.findByIdAndUpdate(id, { ...req.body.food });
@@ -95,8 +109,11 @@ app.all('*', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message = 'Something went wrong' } = err;
-  res.status(statusCode).send(message);
+  const { statusCode = 500 } = err;
+  if (!err.message) {
+    err.message = 'Aww man, something went wrong!';
+  }
+  res.status(statusCode).render('error', { err });
 });
 
 app.listen(3000, () => {
