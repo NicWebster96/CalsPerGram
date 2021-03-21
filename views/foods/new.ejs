@@ -3,10 +3,10 @@
 <div class="row">
   <h1 class="text-center">New Food</h1>
   <div class="col-6 offset-3">
-    <form action="/foods" method="POST">
+    <form action="/foods" method="POST" class="validated-form" novalidate>
       <div class="mb-3">
         <label class="form-label" for="name">Name</label>
-        <input class="form-control" type="text" id="name" name="food[name]" />
+        <input class="form-control" type="text" id="name" name="food[name]" required />
       </div>
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
@@ -19,21 +19,11 @@
       </div>
       <div class="mb-3">
         <label class="form-label" for="calories">Calories</label>
-        <input
-          class="form-control"
-          type="Number"
-          id="calories"
-          name="food[calories]"
-        />
+        <input class="form-control" type="Number" id="calories" name="food[calories]" required />
       </div>
       <div class="mb-3">
         <label class="form-label" for="grams">Grams</label>
-        <input
-          class="form-control"
-          type="Number"
-          id="grams"
-          name="food[grams]"
-        />
+        <input class="form-control" type="Number" id="grams" name="food[grams]" required />
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">Image URL</label>

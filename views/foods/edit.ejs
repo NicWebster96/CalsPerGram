@@ -3,7 +3,7 @@
 <div class="row">
   <h1 class="text-center">Edit Food</h1>
   <div class="col-6 offset-3">
-    <form action="/foods/<%=food._id%>?_method=PUT" method="POST">
+    <form action="/foods/<%=food._id%>?_method=PUT" method="POST" class="validated-form" novalidate>
       <div class="mb-3">
         <label class="form-label" for="name">Name</label>
         <input
@@ -12,16 +12,12 @@
           id="name"
           name="food[name]"
           value="<%=food.name%>"
+          required
         />
       </div>
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
-        <textarea
-          class="form-control"
-          type="text"
-          id="description"
-          name="food[description]"
-        >
+        <textarea class="form-control" type="text" id="description" name="food[description]">
 <%=food.description%></textarea
         >
       </div>
@@ -33,6 +29,7 @@
           id="calories"
           name="food[calories]"
           value="<%=food.calories%>"
+          required
         />
       </div>
       <div class="mb-3">
@@ -43,6 +40,7 @@
           id="grams"
           name="food[grams]"
           value="<%=food.grams%>"
+          required
         />
       </div>
       <div class="mb-3">
