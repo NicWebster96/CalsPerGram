@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/expressError');
 const Food = require('./models/food');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
@@ -28,46 +30,73 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
-  res.send('Hello from MEL!');
+  res.send('Hello from CPG!');
 });
 
-app.get('/foods', async (req, res) => {
-  const foods = await Food.find({});
-  res.render('foods/index', { foods });
-});
+app.get(
+  '/foods',
+  catchAsync(async (req, res, next) => {
+    const foods = await Food.find({});
+    res.render('foods/index', { foods });
+  })
+);
 
 app.get('/foods/new', (req, res) => {
   res.render('foods/new');
 });
 
-app.post('/foods', async (req, res) => {
-  const food = new Food(req.body.food);
-  await food.save();
-  res.redirect(`/foods/${food._id}`);
+app.post(
+  '/foods',
+  catchAsync(async (req, res, next) => {
+    const food = new Food(req.body.food);
+    await food.save();
+    res.redirect(`/foods/${food._id}`);
+  })
+);
+
+app.get(
+  '/foods/:id',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const food = await Food.findById(id);
+    res.render('foods/show', { food });
+  })
+);
+
+app.get(
+  '/foods/:id/edit',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const food = await Food.findById(id);
+    res.render('foods/edit', { food });
+  })
+);
+
+app.put(
+  '/foods/:id',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const food = await Food.findByIdAndUpdate(id, { ...req.body.food });
+    res.redirect(`/foods/${food._id}`);
+  })
+);
+
+app.delete(
+  '/foods/:id',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    await Food.findByIdAndDelete(id);
+    res.redirect(`/foods`);
+  })
+);
+
+app.all('*', (req, res, next) => {
+  next(new ExpressError('Page Not Found', 404));
 });
 
-app.get('/foods/:id', async (req, res) => {
-  const { id } = req.params;
-  const food = await Food.findById(id);
-  res.render('foods/show', { food });
-});
-
-app.get('/foods/:id/edit', async (req, res) => {
-  const { id } = req.params;
-  const food = await Food.findById(id);
-  res.render('foods/edit', { food });
-});
-
-app.put('/foods/:id', async (req, res) => {
-  const { id } = req.params;
-  const food = await Food.findByIdAndUpdate(id, { ...req.body.food });
-  res.redirect(`/foods/${food._id}`);
-});
-
-app.delete('/foods/:id', async (req, res) => {
-  const { id } = req.params;
-  await Food.findByIdAndDelete(id);
-  res.redirect(`/foods`);
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message = 'Something went wrong' } = err;
+  res.status(statusCode).send(message);
 });
 
 app.listen(3000, () => {
