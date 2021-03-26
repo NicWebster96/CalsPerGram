@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/expressError');
 const Food = require('./models/food');
+const Meal = require('./models/meal');
 const Joi = require('joi');
 const { foodSchema } = require('./schemas');
 const methodOverride = require('method-override');
@@ -53,9 +54,31 @@ app.get(
   })
 );
 
+app.get(
+  '/meals',
+  catchAsync(async (req, res, next) => {
+    const meals = await Meal.find({});
+    res.render('meals/index', { meals });
+  })
+);
+
 app.get('/foods/new', (req, res) => {
   res.render('foods/new');
 });
+
+app.get('/meals/new', async (req, res) => {
+  const foods = await Food.find();
+  res.render('meals/new', { foods });
+});
+
+app.get(
+  '/meals/:id/addToMeal',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const meals = await Meal.find();
+    res.render(`meals/select`, { meals });
+  })
+);
 
 app.post(
   '/foods',
@@ -64,6 +87,16 @@ app.post(
     const food = new Food(req.body.food);
     await food.save();
     res.redirect(`/foods/${food._id}`);
+  })
+);
+
+app.post(
+  '/meals',
+  // validateFood,
+  catchAsync(async (req, res, next) => {
+    const meal = new Meal(req.body.meal);
+    await meal.save();
+    res.redirect(`/meals/${meal._id}`);
   })
 );
 
@@ -77,11 +110,31 @@ app.get(
 );
 
 app.get(
+  '/meals/:id',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const meal = await Meal.findById(id).populate('ingredients');
+    res.render('meals/show', { meal });
+  })
+);
+
+app.get(
   '/foods/:id/edit',
   catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const food = await Food.findById(id);
     res.render('foods/edit', { food });
+  })
+);
+
+app.get(
+  '/meals/:id/edit',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const foods = await Food.find();
+    const meal = await Meal.findById(id);
+    const ingredientsList = meal.ingredients;
+    res.render('meals/edit', { meal, foods, ingredientsList });
   })
 );
 
@@ -95,12 +148,31 @@ app.put(
   })
 );
 
+app.put(
+  '/meals/:id',
+  // validateFood,
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const meal = await Meal.findByIdAndUpdate(id, { ...req.body.meal });
+    res.redirect(`/meals/${meal._id}`);
+  })
+);
+
 app.delete(
   '/foods/:id',
   catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Food.findByIdAndDelete(id);
     res.redirect(`/foods`);
+  })
+);
+
+app.delete(
+  '/meals/:id',
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    await Meal.findByIdAndDelete(id);
+    res.redirect(`/meals`);
   })
 );
 

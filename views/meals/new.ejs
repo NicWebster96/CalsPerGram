@@ -1,0 +1,38 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="row">
+  <h1 class="text-center">New Meal</h1>
+  <div class="col-6 offset-3">
+    <form action="/meals" method="POST" class="validated-form" novalidate>
+      <div class="mb-3">
+        <label class="form-label" for="name">Name</label>
+        <input class="form-control" type="text" id="name" name="meal[name]" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="body">Description</label>
+        <textarea class="form-control" type="text" id="body" name="meal[body]"></textarea>
+      </div>
+
+      <% for(let food of foods) { %>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="flexCheckDefault"
+          name="meal[ingredients]"
+          value="<%=food._id%>"
+        />
+        <label class="form-check-label" for="flexCheckDefault"><%= food.name %></label>
+      </div>
+      <% } %>
+
+      <div class="mt-3 mb-3">
+        <button class="btn-success">Add Meal</button>
+      </div>
+
+      <div>
+        <a href="/meals/">Back</a>
+      </div>
+    </form>
+  </div>
+</div>

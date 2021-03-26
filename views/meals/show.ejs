@@ -1,0 +1,34 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card">
+      <div class="card-body">
+        <a class="card-link btn btn-secondary" href="/meals/">Back to all</a>
+        <a class="card-link btn btn-warning" href="/meals/<%= meal._id %>/edit">Edit</a>
+        <form
+          class="card-link d-inline"
+          action="/meals/<%= meal._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title"><%= meal.name %></h5>
+        <p class="card-text"><%= meal.body %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"># Total Calories</li>
+      </ul>
+      <div class="card-body">
+        <h5 class="card-title">Ingredients</h5>
+        <ul class="list-group list-group-flush">
+          <% for(let ingr of meal.ingredients) { %>
+          <li class="list-group-item"><%= ingr.name %></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
