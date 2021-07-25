@@ -10,7 +10,8 @@ const meals = require('./routes/meals');
 mongoose.connect('mongodb://localhost:27017/food-list', {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false
 });
 
 const db = mongoose.connection;
@@ -28,6 +29,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/foods', foods);
 app.use('/meals', meals);
 
