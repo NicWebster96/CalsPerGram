@@ -16,7 +16,7 @@ const validateFood = (req, res, next) => {
 };
 
 router.get(
-  '',
+  '/',
   catchAsync(async (req, res, next) => {
     const foods = await Food.find({});
     res.render('foods/index', { foods });
@@ -28,11 +28,12 @@ router.get('/new', (req, res) => {
 });
 
 router.post(
-  '',
+  '/',
   validateFood,
   catchAsync(async (req, res, next) => {
     const food = new Food(req.body.food);
     await food.save();
+    req.flash('success', 'Successfully added a new food');
     res.redirect(`/foods/${food._id}`);
   })
 );
