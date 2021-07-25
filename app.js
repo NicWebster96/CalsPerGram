@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const ExpressError = require('./utils/expressError');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
+const session = require('express-session');
+
 const foods = require('./routes/foods');
 const meals = require('./routes/meals');
 
@@ -30,6 +32,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const sessionConfig = {
+  secret: 'thisshouldbeabettersecret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true
+  }
+};
+app.use(session(sessionConfig));
+
 app.use('/foods', foods);
 app.use('/meals', meals);
 
